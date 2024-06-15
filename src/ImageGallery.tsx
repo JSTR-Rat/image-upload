@@ -1,67 +1,68 @@
 import { useState, useEffect, useCallback, DragEventHandler } from 'react';
+import { FileUploader } from './FileUploader';
 
-const ImageGallery = () => {
-  const [images, setImages] = useState<{ Key: string }[]>([]);
-  const [continuationToken, setContinuationToken] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const uploadToS3 = async (file: File) => {
-    try {
-      // Fetch the presigned URL from your API Gateway
-      const response = await fetch(
-        'https://7mo5lqvxn8.execute-api.ap-southeast-2.amazonaws.com/Dev/upload',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            key: file.name,
-            contentType: file.type,
-          }),
-        }
-      );
-
-      const { presignedUrl } = await response.json();
-
-      // Upload the file to S3 using the presigned URL
-      const uploadResponse = await fetch(presignedUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': file.type,
-        },
-        body: file,
-      });
-
-      if (uploadResponse.ok) {
-        console.log('Upload successful');
-      } else {
-        console.error('Error uploading file:', uploadResponse.statusText);
-      }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  };
-
-  const fetchImages = async (token: any) => {
+const uploadToS3 = async (file: File) => {
+  try {
+    // Fetch the presigned URL from your API Gateway
     const response = await fetch(
-      'https://7mo5lqvxn8.execute-api.ap-southeast-2.amazonaws.com/Dev/list',
+      'https://7mo5lqvxn8.execute-api.ap-southeast-2.amazonaws.com/Dev/upload',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          continuationToken: token,
+          key: file.name,
+          contentType: file.type,
         }),
       }
     );
 
-    const data = await response.json();
-    return data;
-  };
+    const { presignedUrl } = await response.json();
 
-  const loadMoreImages = async () => {
+    // Upload the file to S3 using the presigned URL
+    const uploadResponse = await fetch(presignedUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    });
+
+    if (uploadResponse.ok) {
+      console.log('Upload successful');
+    } else {
+      console.error('Error uploading file:', uploadResponse.statusText);
+    }
+  } catch (error) {
+    console.error('Error uploading file:', error);
+  }
+};
+
+const fetchImages = async (token: any) => {
+  const response = await fetch(
+    'https://7mo5lqvxn8.execute-api.ap-southeast-2.amazonaws.com/Dev/list',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        continuationToken: token,
+      }),
+    }
+  );
+
+  const data = await response.json();
+  return data;
+};
+
+const ImageGallery = () => {
+  const [images, setImages] = useState<{ Key: string }[]>([]);
+  const [continuationToken, setContinuationToken] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const loadMoreImages = useCallback(async () => {
     setLoading(true);
     const data = await fetchImages(continuationToken);
 
@@ -81,7 +82,16 @@ const ImageGallery = () => {
 
     setContinuationToken(data.nextContinuationToken);
     setLoading(false);
-  };
+  }, [continuationToken]);
+
+  const uploadFile = useCallback(
+    async (file: File) => {
+      await uploadToS3(file);
+      await new Promise((res) => setTimeout(res, 2000));
+      loadMoreImages();
+    },
+    [loadMoreImages]
+  );
 
   const handleFileDrop: DragEventHandler<HTMLDivElement> = useCallback(
     async (ev) => {
@@ -89,12 +99,10 @@ const ImageGallery = () => {
       console.log(ev);
       if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
         const file = ev.dataTransfer.files[0];
-        await uploadToS3(file);
-        await new Promise((res) => setTimeout(res, 2000));
-        loadMoreImages();
+        await uploadFile(file);
       }
     },
-    []
+    [uploadFile]
   );
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = useCallback((ev) => {
@@ -106,7 +114,12 @@ const ImageGallery = () => {
   }, []);
 
   return (
-    <div onDragOver={handleDragOver} onDrop={handleFileDrop}>
+    <div
+      className="w-full min-h-dvh"
+      onDragOver={handleDragOver}
+      onDrop={handleFileDrop}
+    >
+      <FileUploader onSelect={uploadFile} />
       <div id="image-container">
         {images.map((image) => (
           <img
