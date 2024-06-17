@@ -28,7 +28,10 @@ export const FileUploader: FC<Props> = (props) => {
 
   return (
     <div>
-      <Button className="fixed top-0 right-0 m-4" onClick={handleClick}>
+      <Button
+        className="fixed top-0 right-0 m-2 p-2 bg-black bg-opacity-20 rounded-lg"
+        onClick={handleClick}
+      >
         <ArrowUpTrayIcon className="size-8 fill-white" />
       </Button>
       <input

@@ -39,7 +39,7 @@ const uploadToS3 = async (file: File) => {
   }
 };
 
-const fetchImages = async (token: any) => {
+const fetchImages = async (token: string | null) => {
   const response = await fetch(
     'https://7mo5lqvxn8.execute-api.ap-southeast-2.amazonaws.com/Dev/list',
     {
@@ -59,7 +59,9 @@ const fetchImages = async (token: any) => {
 
 const ImageGallery = () => {
   const [images, setImages] = useState<{ Key: string }[]>([]);
-  const [continuationToken, setContinuationToken] = useState(null);
+  const [continuationToken, setContinuationToken] = useState<string | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
 
   const loadMoreImages = useCallback(async () => {
@@ -120,13 +122,20 @@ const ImageGallery = () => {
       onDrop={handleFileDrop}
     >
       <FileUploader onSelect={uploadFile} />
-      <div id="image-container">
+      <div id="image-container" className="snap-proximity snap-both">
         {images.map((image) => (
-          <img
+          <div
             key={image.Key}
-            src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key}`}
-            alt={image.Key}
+            className="bg-no-repeat bg-center bg-contain min-h-dvh w-full snap-center"
+            style={{
+              backgroundImage: `url(https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key})`,
+            }}
           />
+          // <img
+          //   key={image.Key}
+          //   src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key}`}
+          //   alt={image.Key}
+          // />
         ))}
       </div>
       {continuationToken && !loading && (
