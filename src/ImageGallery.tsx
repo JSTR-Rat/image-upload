@@ -125,7 +125,7 @@ const ImageGallery = () => {
         {images.map((image) => (
           <div
             key={image.Key}
-            className="bg-no-repeat bg-center bg-contain min-h-dvh w-full snap-center pointer-events-none"
+            className="bg-no-repeat bg-center bg-contain min-h-vh w-full snap-center pointer-events-none"
             style={{
               backgroundImage: `url(https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key})`,
             }}
