@@ -121,7 +121,7 @@ const ImageGallery = () => {
       onDrop={handleFileDrop}
     >
       <FileUploader onSelect={uploadFiles} />
-      <div id="image-container" className="snap-proximity snap-both">
+      <div id="image-container" className="snap-proximity snap-y w-full min-h-dvh overflow-scroll">
         {images.map((image) => (
           <div
             key={image.Key}
