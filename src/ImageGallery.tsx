@@ -86,9 +86,9 @@ const ImageGallery = () => {
     setLoading(false);
   }, [continuationToken]);
 
-  const uploadFile = useCallback(
-    async (file: File) => {
-      await uploadToS3(file);
+  const uploadFiles = useCallback(
+    async (files: File[]) => {
+      await Promise.all(files.map(uploadToS3));
       await new Promise((res) => setTimeout(res, 2000));
       loadMoreImages();
     },
@@ -100,11 +100,10 @@ const ImageGallery = () => {
       ev.preventDefault();
       console.log(ev);
       if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
-        const file = ev.dataTransfer.files[0];
-        await uploadFile(file);
+        await uploadFiles([...ev.dataTransfer.files]);
       }
     },
-    [uploadFile]
+    [uploadFiles]
   );
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = useCallback((ev) => {
@@ -121,12 +120,12 @@ const ImageGallery = () => {
       onDragOver={handleDragOver}
       onDrop={handleFileDrop}
     >
-      <FileUploader onSelect={uploadFile} />
+      <FileUploader onSelect={uploadFiles} />
       <div id="image-container" className="snap-proximity snap-both">
         {images.map((image) => (
           <div
             key={image.Key}
-            className="bg-no-repeat bg-center bg-contain min-h-dvh w-full snap-center"
+            className="bg-no-repeat bg-center bg-contain min-h-dvh w-full snap-center pointer-events-none"
             style={{
               backgroundImage: `url(https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key})`,
             }}

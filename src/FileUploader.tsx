@@ -3,7 +3,7 @@ import { ArrowUpTrayIcon } from '@heroicons/react/20/solid';
 import { Button } from '@headlessui/react';
 
 type Props = {
-  onSelect: (file: File) => void;
+  onSelect: (files: File[]) => void;
 };
 
 export const FileUploader: FC<Props> = (props) => {
@@ -19,7 +19,7 @@ export const FileUploader: FC<Props> = (props) => {
     (event) => {
       const files = event.target.files;
       if (files !== null && files.length > 0) {
-        onSelect?.(files[0]);
+        onSelect?.([...files]);
         // Handle the selected file here (e.g., upload to server)
       }
     },
@@ -36,6 +36,7 @@ export const FileUploader: FC<Props> = (props) => {
       </Button>
       <input
         type="file"
+        multiple={true}
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
