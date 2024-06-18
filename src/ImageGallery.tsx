@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, DragEventHandler } from 'react';
 import { FileUploader } from './FileUploader';
+import { useMutation } from '@tanstack/react-query';
+import { SpinnerBG } from './SpinnerBG';
 
 const uploadToS3 = async (file: File) => {
   try {
@@ -64,6 +66,12 @@ const ImageGallery = () => {
   );
   const [loading, setLoading] = useState(false);
 
+  const uploadMutation = useMutation({
+    mutationFn: async (files: File[]) => {
+      await Promise.all(files.map(uploadToS3));
+    },
+  });
+
   const loadMoreImages = useCallback(async () => {
     setLoading(true);
     const data = await fetchImages(continuationToken);
@@ -88,11 +96,9 @@ const ImageGallery = () => {
 
   const uploadFiles = useCallback(
     async (files: File[]) => {
-      await Promise.all(files.map(uploadToS3));
-      await new Promise((res) => setTimeout(res, 2000));
-      loadMoreImages();
+      await uploadMutation.mutateAsync(files);
     },
-    [loadMoreImages]
+    [uploadMutation]
   );
 
   const handleFileDrop: DragEventHandler<HTMLDivElement> = useCallback(
@@ -125,7 +131,7 @@ const ImageGallery = () => {
         {images.map((image) => (
           <img
             key={image.Key}
-            className="object-contain max-w-full max-h-full mx-auto snap-always snap-center"
+            className="object-contain w-full max-w-full max-h-full mx-auto snap-always snap-center"
             src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key}`}
             alt={image.Key}
           />
@@ -138,6 +144,7 @@ const ImageGallery = () => {
           {!continuationToken && !loading && <p>No more images</p>}
         </div>
       </div>
+      {uploadMutation.isPending && <SpinnerBG />}
     </div>
   );
 };

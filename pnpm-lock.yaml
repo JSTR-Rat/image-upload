@@ -17,6 +17,12 @@ dependencies:
   '@heroicons/react':
     specifier: ^2.1.3
     version: 2.1.3(react@18.3.1)
+  '@tanstack/react-query':
+    specifier: ^5.45.1
+    version: 5.45.1(react@18.3.1)
+  clsx:
+    specifier: ^2.1.1
+    version: 2.1.1
   react:
     specifier: ^18.2.0
     version: 18.3.1
@@ -2015,6 +2021,19 @@ packages:
     resolution: {integrity: sha512-YNlnKRWF2sVojTpIyzwou9XoTNbzbzONwRhOoniEioF1AtaitTvVZblaQRrAzChWQ1bLYyYSWzM18y4WwgzJ+A==}
     dependencies:
       tslib: 2.6.3
+    dev: false
+
+  /@tanstack/query-core@5.45.0:
+    resolution: {integrity: sha512-RVfIZQmFUTdjhSAAblvueimfngYyfN6HlwaJUPK71PKd7yi43Vs1S/rdimmZedPWX/WGppcq/U1HOj7O7FwYxw==}
+    dev: false
+
+  /@tanstack/react-query@5.45.1(react@18.3.1):
+    resolution: {integrity: sha512-mYYfJujKg2kxmkRRjA6nn4YKG3ITsKuH22f1kteJ5IuVQqgKUgbaSQfYwVP0gBS05mhwxO03HVpD0t7BMN7WOA==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      '@tanstack/query-core': 5.45.0
+      react: 18.3.1
     dev: false
 
   /@tanstack/react-virtual@3.5.0(react-dom@18.3.1)(react@18.3.1):
