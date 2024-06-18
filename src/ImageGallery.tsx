@@ -121,31 +121,23 @@ const ImageGallery = () => {
       onDrop={handleFileDrop}
     >
       <FileUploader onSelect={uploadFiles} />
-      <div
-        id="image-container"
-        className="snap-proximity snap-y w-full min-h-svh h-svh overflow-y-scroll"
-      >
+      <div className="snap-proximity snap-y w-full min-h-svh h-svh max-h-svh overflow-y-scroll">
         {images.map((image) => (
-          // <div
-          //   key={image.Key}
-          //   className="bg-no-repeat h-min bg-center bg-contain w-full snap-center pointer-events-none"
-          //   style={{
-          //     backgroundImage: `url(https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key})`,
-          //   }}
-          // />
           <img
             key={image.Key}
-            className="object-contain mx-auto snap-always snap-center"
+            className="object-contain max-w-full max-h-full mx-auto snap-always snap-center"
             src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key}`}
             alt={image.Key}
           />
         ))}
+        <div className="w-full h-56 snap-always snap-center">
+          {continuationToken && !loading && (
+            <button onClick={loadMoreImages}>Load More</button>
+          )}
+          {loading && <p>Loading...</p>}
+          {!continuationToken && !loading && <p>No more images</p>}
+        </div>
       </div>
-      {continuationToken && !loading && (
-        <button onClick={loadMoreImages}>Load More</button>
-      )}
-      {loading && <p>Loading...</p>}
-      {!continuationToken && !loading && <p>No more images</p>}
     </div>
   );
 };
