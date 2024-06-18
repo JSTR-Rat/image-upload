@@ -121,20 +121,24 @@ const ImageGallery = () => {
       onDrop={handleFileDrop}
     >
       <FileUploader onSelect={uploadFiles} />
-      <div id="image-container" className="snap-proximity snap-y w-full min-h-dvh overflow-scroll">
+      <div
+        id="image-container"
+        className="snap-proximity snap-y w-full min-h-svh h-svh overflow-y-scroll"
+      >
         {images.map((image) => (
-          <div
-            key={image.Key}
-            className="bg-no-repeat bg-center bg-contain min-h-vh w-full snap-center pointer-events-none"
-            style={{
-              backgroundImage: `url(https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key})`,
-            }}
-          />
-          // <img
+          // <div
           //   key={image.Key}
-          //   src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key}`}
-          //   alt={image.Key}
+          //   className="bg-no-repeat h-min bg-center bg-contain w-full snap-center pointer-events-none"
+          //   style={{
+          //     backgroundImage: `url(https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key})`,
+          //   }}
           // />
+          <img
+            key={image.Key}
+            className="object-contain mx-auto snap-always snap-center"
+            src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image.Key}`}
+            alt={image.Key}
+          />
         ))}
       </div>
       {continuationToken && !loading && (
