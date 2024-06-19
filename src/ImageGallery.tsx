@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SpinnerBG } from './SpinnerBG';
 import { SpinnerIcon } from './SpinnerIcon';
 import { useImagesInfiniteQuery } from './queries/ImagesInfiniteQuery';
-import { ArrowPathIcon } from '@heroicons/react/20/solid';
+import { ArrowDownCircleIcon } from '@heroicons/react/20/solid';
 import { Button } from '@headlessui/react';
 
 const uploadToS3 = async (file: File) => {
@@ -98,11 +98,18 @@ const ImageGallery = () => {
         )}
         <div className="w-full h-56 snap-always snap-center">
           {imagesQuery.hasNextPage && !imagesQuery.isFetching && (
-            <Button onClick={loadMoreImages}>
-              <ArrowPathIcon />
+            <Button
+              onClick={loadMoreImages}
+              className="w-full h-full flex justify-center items-center"
+            >
+              <ArrowDownCircleIcon className="size-20" />
             </Button>
           )}
-          {imagesQuery.isFetching && <SpinnerIcon />}
+          {imagesQuery.isFetching && (
+            <div className="w-full h-full flex justify-center items-center">
+              <SpinnerIcon className="size-20" />
+            </div>
+          )}
           {!imagesQuery.hasNextPage && !imagesQuery.isFetching && (
             <p>No more images</p>
           )}
