@@ -85,18 +85,18 @@ const ImageGallery = () => {
       onDrop={handleFileDrop}
     >
       <FileUploader onSelect={uploadMutation.mutateAsync} />
-      <div className="snap-proximity snap-y w-full min-h-svh h-svh max-h-svh overflow-y-scroll">
+      <div className="w-full min-h-svh h-svh max-h-svh overflow-y-scroll">
         {imagesQuery.data?.pages.map((page) =>
           page.images.map((image) => (
             <img
               key={image}
-              className="object-contain w-full max-w-full max-h-full mx-auto snap-always snap-center"
+              className="object-contain w-full max-w-full max-h-full mx-auto"
               src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image}`}
               alt={image}
             />
           ))
         )}
-        <div className="w-full h-56 snap-always snap-center">
+        <div className="w-full h-56">
           {imagesQuery.hasNextPage && !imagesQuery.isFetching && (
             <Button
               onClick={loadMoreImages}
