@@ -88,12 +88,14 @@ const ImageGallery = () => {
       <div className="w-full min-h-svh h-svh max-h-svh overflow-y-scroll">
         {imagesQuery.data?.pages.map((page) =>
           page.images.map((image) => (
-            <img
-              key={image}
-              className="object-contain w-full max-w-full max-h-full mx-auto"
-              src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image}`}
-              alt={image}
-            />
+            <a key={image} href={`#${image}`} onClick={(e) => e.stopPropagation()}>
+              <img
+                id={image}
+                className="object-contain w-full max-w-full max-h-full mx-auto"
+                src={`https://censor-studio.s3.ap-southeast-2.amazonaws.com/${image}`}
+                alt={image}
+              />
+            </a>
           ))
         )}
         <div className="w-full h-56">
