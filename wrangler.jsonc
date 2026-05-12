@@ -1,0 +1,103 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "image-upload-dev",
+  "compatibility_date": "2026-04-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "observability": {
+    "enabled": true,
+  },
+  "upload_source_maps": true,
+  /**
+   * Smart Placement
+   * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+   */
+  "placement": {
+    "mode": "smart",
+  },
+  /**
+   * Bindings
+   * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
+   * databases, object storage, AI inference, real-time communication and more.
+   * https://developers.cloudflare.com/workers/runtime-apis/bindings/
+   */
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "image-upload-db-local",
+      "database_id": "106044e7-2e53-4e8f-867d-4f34b0842383",
+      "migrations_dir": "drizzle/",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "CDN_BUCKET",
+      "bucket_name": "image-upload-cdn-staging",
+    },
+  ],
+  /**
+   * Environment Variables
+   * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+   * Note: Use secrets to store sensitive data.
+   * https://developers.cloudflare.com/workers/configuration/secrets/
+   */
+  "vars": {
+    "BETTER_AUTH_URL": "http://localhost:3000",
+  },
+  /**
+   * Static Assets
+   * https://developers.cloudflare.com/workers/static-assets/binding/
+   */
+  // "assets": {  "directory": "./public/",  "binding": "ASSETS" }
+  /**
+   * Service Bindings (communicate between multiple Workers)
+   * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
+   */
+  // "services": [  {   "binding": "MY_SERVICE",   "service": "my-service"  } ]
+  "env": {
+    "staging": {
+      "name": "image-upload-staging",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "image-upload-db-staging",
+          "database_id": "106044e7-2e53-4e8f-867d-4f34b0842383",
+          "migrations_dir": "drizzle/",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "CDN_BUCKET",
+          "bucket_name": "image-upload-cdn-staging",
+        },
+      ],
+      "vars": {
+        "BETTER_AUTH_URL": "/",
+      },
+    },
+    "production": {
+      "name": "image-upload",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "image-upload-db",
+          "database_id": "e71fce6f-8c82-4e22-80d5-3cc1beec3d87",
+          "migrations_dir": "drizzle/",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "CDN_BUCKET",
+          "bucket_name": "image-upload-cdn",
+        },
+      ],
+      "vars": {
+        "BETTER_AUTH_URL": "/",
+      },
+    },
+  },
+}
