@@ -12,11 +12,16 @@ import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
+import { ensureSessionFn } from '#/server/ensure-session'
+
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async () => {
+    await ensureSessionFn()
+  },
   head: () => ({
     meta: [
       {

@@ -8,6 +8,13 @@
       "when": 1778570887048,
       "tag": "0000_illegal_maginty",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1778570888000,
+      "tag": "0001_gallery_auth",
+      "breakpoints": true
     }
   ]
 }

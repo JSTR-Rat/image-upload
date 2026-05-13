@@ -29,14 +29,14 @@
     {
       "binding": "DB",
       "database_name": "image-upload-db-local",
-      "database_id": "106044e7-2e53-4e8f-867d-4f34b0842383",
+      "database_id": "e71fce6f-8c82-4e22-80d5-3cc1beec3d87",
       "migrations_dir": "drizzle/",
     },
   ],
   "r2_buckets": [
     {
       "binding": "CDN_BUCKET",
-      "bucket_name": "image-upload-cdn-staging",
+      "bucket_name": "image-upload-cdn",
     },
   ],
   /**
@@ -47,6 +47,9 @@
    */
   "vars": {
     "BETTER_AUTH_URL": "http://localhost:3000",
+  },
+  "secrets": {
+    "required": ["BETTER_AUTH_SECRET"],
   },
   /**
    * Static Assets
@@ -61,42 +64,64 @@
   "env": {
     "staging": {
       "name": "image-upload-staging",
+      "workers_dev": false,
+      "routes": [{ "custom_domain": true, "pattern": "staging.img.jstr.sh" }],
       "d1_databases": [
         {
           "binding": "DB",
           "database_name": "image-upload-db-staging",
           "database_id": "106044e7-2e53-4e8f-867d-4f34b0842383",
           "migrations_dir": "drizzle/",
+          /**
+           * Required for Wrangler tooling (including getPlatformProxy used by scripts/create-admin.ts)
+           * to talk to hosted D1. Without this, bindings stay on local Miniflare SQLite under .wrangler/state.
+           */
+          "remote": true,
         },
       ],
       "r2_buckets": [
         {
           "binding": "CDN_BUCKET",
           "bucket_name": "image-upload-cdn-staging",
+          /**
+           * Match D1: without `remote`, Wrangler tooling (e.g. getPlatformProxy) uses a local R2
+           * emulator while remote D1 writes go to prod — scripts must hit hosted R2 for both.
+           */
+          "remote": true,
         },
       ],
       "vars": {
-        "BETTER_AUTH_URL": "/",
+        "BETTER_AUTH_URL": "https://staging.img.jstr.sh",
+      },
+      "secrets": {
+        "required": ["BETTER_AUTH_SECRET"],
       },
     },
     "production": {
       "name": "image-upload",
+      "workers_dev": false,
+      "routes": [{ "custom_domain": true, "pattern": "img.jstr.sh" }],
       "d1_databases": [
         {
           "binding": "DB",
           "database_name": "image-upload-db",
           "database_id": "e71fce6f-8c82-4e22-80d5-3cc1beec3d87",
           "migrations_dir": "drizzle/",
+          "remote": true,
         },
       ],
       "r2_buckets": [
         {
           "binding": "CDN_BUCKET",
           "bucket_name": "image-upload-cdn",
+          "remote": true,
         },
       ],
       "vars": {
-        "BETTER_AUTH_URL": "/",
+        "BETTER_AUTH_URL": "https://img.jstr.sh",
+      },
+      "secrets": {
+        "required": ["BETTER_AUTH_SECRET"],
       },
     },
   },

@@ -1,14 +1,9 @@
-import { db } from '#/db';
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { tanstackStartCookies } from 'better-auth/tanstack-start';
+import { env } from 'cloudflare:workers';
 
-export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: 'sqlite',
-  }),
-  emailAndPassword: {
-    enabled: true,
-  },
-  plugins: [tanstackStartCookies()],
+import { createAuthInstance } from './auth-factory';
+
+export const auth = createAuthInstance({
+  DB: env.DB,
+  BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET,
+  BETTER_AUTH_URL: env.BETTER_AUTH_URL,
 });

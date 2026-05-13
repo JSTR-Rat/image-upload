@@ -20,6 +20,9 @@ build/
 # Environment variables
 .env
 .env.*
+!.env.development.example
+!.env.staging.example
+!.env.production.example
 .dev.vars
 
 # Cloudflare Workers
