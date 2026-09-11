@@ -1,4 +1,4 @@
-import { imageSize } from 'image-size';
+import { disableTypes, imageSize } from 'image-size';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { and, count, desc, eq, isNull, lt, or } from 'drizzle-orm';
@@ -12,6 +12,8 @@ import { GALLERY_PAGE_SIZE } from '#/lib/gallery-config';
 import { canDeleteGalleryImage } from '#/lib/permissions';
 
 import type { AdminGalleryListItem, GalleryListItem } from '#/types/gallery';
+
+disableTypes(['icns', 'heif', 'jxl']);
 
 const galleryListInput = z.object({
   cursor: z

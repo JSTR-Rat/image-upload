@@ -26,6 +26,7 @@ export const authRoles = {
       'impersonate',
       'delete',
       'set-password',
+      'set-email',
       'get',
       'update',
     ],
